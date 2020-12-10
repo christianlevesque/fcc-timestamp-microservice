@@ -1,0 +1,15 @@
+# IDEs
+.idea
+.vs
+.vscode
+
+# .NET
+[Bb]in
+[Oo]bj
+[Pp]ublish
+*.dll
+*.blob
+
+# Deployment
+*.tar
+*.zip
