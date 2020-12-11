@@ -23,7 +23,7 @@ namespace timestamp
 				});
 			});
 
-			app.UseWhen(context => context.Request.Method == "POST", builder =>
+			app.MapWhen(context => context.Request.Method == "POST", builder =>
 			{
 				builder.Use(async (context, next) =>
 				{
