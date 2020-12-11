@@ -23,16 +23,15 @@ namespace timestamp
 				});
 			});
 
-			app.Use(async (context, next) =>
+			app.UseWhen(context => context.Request.Method == "POST", builder =>
 			{
-				if (context.Request.Headers.TryGetValue("X-Application-Purpose", out var purpose))
+				builder.Use(async (context, next) =>
 				{
-					await context.Response.WriteAsync($"You already have a purpose! Your purpose is {purpose}!");
-					return;
-				}
-				
-				context.Response.Headers.Add("X-Application-Purpose", "Timestamp Microservice");
-				await next.Invoke();
+					if (!context.Request.Headers.ContainsKey("X-Application-Purpose"))
+						context.Response.Headers.Add("X-Application-Purpose", "Timestamp Microservice");
+
+					await next.Invoke();
+				});
 			});
 
 			app.Run(async context =>
