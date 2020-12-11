@@ -16,6 +16,12 @@ namespace timestamp
 
 			app.Use(async (context, next) =>
 			{
+				if (context.Request.Headers.TryGetValue("X-Application-Purpose", out var purpose))
+				{
+					await context.Response.WriteAsync($"You already have a purpose! Your purpose is {purpose}!");
+					return;
+				}
+				
 				context.Response.Headers.Add("X-Application-Purpose", "Timestamp Microservice");
 				await next.Invoke();
 			});
