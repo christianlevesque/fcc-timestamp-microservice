@@ -13,31 +13,6 @@ namespace timestamp
 			{
 				app.UseDeveloperExceptionPage();
 			}
-
-			app.Map("/trigger-map", builder =>
-			{
-				builder.Use(async (context, next) =>
-				{
-					context.Response.Headers.Add("X-Proof-Of-Middleware", "I was executed!");
-					await next.Invoke();
-				});
-			});
-
-			app.MapWhen(context => context.Request.Method == "POST", builder =>
-			{
-				builder.Use(async (context, next) =>
-				{
-					if (!context.Request.Headers.ContainsKey("X-Application-Purpose"))
-						context.Response.Headers.Add("X-Application-Purpose", "Timestamp Microservice");
-
-					await next.Invoke();
-				});
-			});
-
-			app.Run(async context =>
-			{
-				await context.Response.WriteAsync("You got an extra header!");
-			});
 		}
 	}
 }
