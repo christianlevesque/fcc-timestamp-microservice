@@ -14,6 +14,15 @@ namespace timestamp
 				app.UseDeveloperExceptionPage();
 			}
 
+			app.Map("/trigger-map", builder =>
+			{
+				builder.Use(async (context, next) =>
+				{
+					context.Response.Headers.Add("X-Proof-Of-Middleware", "I was executed!");
+					await next.Invoke();
+				});
+			});
+
 			app.Use(async (context, next) =>
 			{
 				if (context.Request.Headers.TryGetValue("X-Application-Purpose", out var purpose))
