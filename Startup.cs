@@ -30,6 +30,8 @@ namespace timestamp
 			}
 
 			app.UseCors("AllowFcc");
+
+			app.Run(context => context.Response.WriteAsync("Hello, CORS!"));
 		}
 	}
 }
