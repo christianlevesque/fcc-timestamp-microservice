@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
 
 namespace timestamp
 {
@@ -17,6 +18,7 @@ namespace timestamp
 				{
 					policy.WithOrigins("https://www.freecodecamp.org");
 					policy.WithMethods("GET");
+					policy.WithHeaders(HeaderNames.Accept, HeaderNames.AcceptEncoding, HeaderNames.AcceptLanguage, HeaderNames.Connection, HeaderNames.Host, HeaderNames.Origin, HeaderNames.Referer, HeaderNames.UserAgent);
 				});
 			});
 		}
