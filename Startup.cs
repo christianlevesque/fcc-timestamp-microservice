@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,7 +51,12 @@ namespace timestamp
 					context.Request.Path = context.Request.Path.ToString()
 												  .Substring(1);
 				}
-				
+
+				return next.Invoke();
+			});
+
+			app.Use((context, next) =>
+			{
 				// Our app always returns JSON
 				context.Response.ContentType = "application/json";
 				return next.Invoke();
@@ -70,7 +74,7 @@ namespace timestamp
 				var date = context.Request.Path.ToString()
 								  .Substring(1);
 				var timestamp = GetTimestamp(date);
-				
+
 				// GetTimestamp returns null if the date couldn't be parsed
 				if (timestamp == null)
 					return context.Response.WriteAsync(JsonSerializer.Serialize(_error));
@@ -78,7 +82,7 @@ namespace timestamp
 				return context.Response.WriteAsync(JsonSerializer.Serialize(timestamp));
 			});
 
-			app.Run(context =>  context.Response.WriteAsync(JsonSerializer.Serialize(new Timestamp())));
+			app.Run(context => context.Response.WriteAsync(JsonSerializer.Serialize(new Timestamp())));
 		}
 
 		private Timestamp GetTimestamp(string dateString)
@@ -87,12 +91,11 @@ namespace timestamp
 			// it's a UNIX timestamp
 			if (long.TryParse(dateString, out var unixDate))
 			{
-				var epoch = DateTime.UnixEpoch;
-				var date1 = epoch.AddMilliseconds(unixDate)
-								.ToUniversalTime();
+				var date1 = DateTime.UnixEpoch.AddMilliseconds(unixDate)
+									.ToUniversalTime();
 				return new Timestamp(date1);
 			}
-			
+
 			// If a date can be parsed as a string
 			// it's a UTC date string
 			if (DateTime.TryParse(dateString, out var date2))
